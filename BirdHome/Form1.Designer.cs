@@ -30,30 +30,48 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             home1 = new Home();
+            vetka1 = new Vetka();
             SuspendLayout();
             // 
             // home1
             // 
             home1.BackColor = Color.Transparent;
             home1.BackgroundImage = (Image)resources.GetObject("home1.BackgroundImage");
-            home1.Location = new Point(356, 38);
+            home1.CountBird = 0U;
+            home1.Location = new Point(650, 14);
+            home1.Margin = new Padding(3, 5, 3, 5);
             home1.Name = "home1";
-            home1.Size = new Size(314, 291);
+            home1.Size = new Size(318, 295);
             home1.TabIndex = 0;
+            // 
+            // vetka1
+            // 
+            vetka1.BackColor = Color.Transparent;
+            vetka1.BackgroundImage = (Image)resources.GetObject("vetka1.BackgroundImage");
+            vetka1.CountBird = 0;
+            vetka1.ForeColor = SystemColors.ControlText;
+            vetka1.Location = new Point(602, 460);
+            vetka1.Name = "vetka1";
+            vetka1.Size = new Size(445, 222);
+            vetka1.TabIndex = 1;
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1128, 707);
+            Controls.Add(vetka1);
             Controls.Add(home1);
+            Margin = new Padding(3, 4, 3, 4);
             Name = "Form1";
             Text = "Кормушка";
+            FormClosing += Form1_FormClosing;
             ResumeLayout(false);
         }
 
         #endregion
 
         private Home home1;
+        private Vetka vetka1;
     }
 }

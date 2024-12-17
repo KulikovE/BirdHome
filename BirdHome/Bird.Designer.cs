@@ -33,12 +33,13 @@
             // 
             // Bird
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Transparent;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            Margin = new Padding(3, 4, 3, 4);
             Name = "Bird";
-            Size = new Size(137, 110);
+            Size = new Size(144, 109);
             ResumeLayout(false);
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace BirdHome
 {
-    partial class Home
+    partial class Vetka
     {
         /// <summary> 
         /// Обязательная переменная конструктора.
@@ -28,31 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Home));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Vetka));
             textBox1 = new TextBox();
             SuspendLayout();
             // 
             // textBox1
             // 
             textBox1.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 204);
-            textBox1.Location = new Point(128, 51);
-            textBox1.Margin = new Padding(3, 4, 3, 4);
+            textBox1.Location = new Point(321, 42);
             textBox1.Name = "textBox1";
             textBox1.ReadOnly = true;
-            textBox1.Size = new Size(43, 47);
+            textBox1.Size = new Size(61, 47);
             textBox1.TabIndex = 0;
             textBox1.TabStop = false;
             // 
-            // Home
+            // Vetka
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Transparent;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             Controls.Add(textBox1);
-            Margin = new Padding(3, 4, 3, 4);
-            Name = "Home";
-            Size = new Size(321, 295);
+            ForeColor = SystemColors.ControlText;
+            Name = "Vetka";
+            Size = new Size(451, 222);
             ResumeLayout(false);
             PerformLayout();
         }
