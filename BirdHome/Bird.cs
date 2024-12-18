@@ -30,35 +30,31 @@ namespace BirdHome
             kormushka = home;
             this.vetka = vetka;
             Left = 0;
-            Top = kormushka.Top+this.Height;
-            threadBird = new Thread(ServiceBird);
-            threadBird.Start();
+            Top = kormushka.Top + this.Height;
         }
-        //public void Stop()
-        //{
-        //    if (feedingNow)
-        //    {
-        //        threadBird.Join();
-        //    }
-        //    else
-        //    {
-        //        Controls.Remove(this);
-        //        Form1.birds.Remove(this);
-        //        Dispose();
-        //    }
-        //}
-       
+
+
+
+
+        public void Stop()
+        {
+            if (threadBird != null && threadBird.IsAlive)
+            {
+                threadBird.Interrupt();
+            }
+        }
+
+
 
         void ServiceBird()
         {
             try
             {
-                Thread.Sleep(500);
                 while (this.Location.X + this.Width < kormushka.Location.X)
                 {
                     Invoke(new Action(() => Left += 10));
                     ChangeImage();
-                    Thread.Sleep(250);
+                    Thread.Sleep(20);
                 }
                 if (kormushka.SemaphoreHome.WaitOne(0))
                 {
@@ -71,7 +67,7 @@ namespace BirdHome
                     {
                         Invoke(new Action(() => { Left += 10; Top += 10; }));
                         ChangeImage();
-                        Thread.Sleep(250);
+                        Thread.Sleep(20);
                     }
                     Invoke(new Action(() => { vetka.CountBird++; Visible = false; }));
                     kormushka.SemaphoreHome.WaitOne();
@@ -80,11 +76,16 @@ namespace BirdHome
                     {
                         Invoke(new Action(() => { Left -= 10; Top -= 10; }));
                         ChangeImage();
-                        Thread.Sleep(250);
+                        Thread.Sleep(20);
                     }
                     Invoke(new Action(() => kormushka.CountBird++));
                     Eat();
                 }
+
+            }
+            catch (ThreadInterruptedException)
+            {
+
             }
             finally
             {
@@ -92,16 +93,15 @@ namespace BirdHome
                 Form1.birds.Remove(this);
                 Dispose();
             }
-            
+
         }
 
         void Eat()
         {
+            feedingNow = true;
             Invoke(new Action(() => Visible = false));
             Random random = new Random();
-            feedingNow = true;
-            Thread.Sleep(random.Next(DownDelay*1000, UpDelay*1000));
-            feedingNow = false;
+            Thread.Sleep(random.Next(DownDelay * 1000, UpDelay * 1000));
             int a = kormushka.SemaphoreHome.Release();
             Invoke(new Action(() => { Visible = true; Left += kormushka.Size.Width; kormushka.CountBird--; }));
             for (int i = 0; i < 40; i++)
@@ -110,6 +110,7 @@ namespace BirdHome
                 ChangeImage();
                 Thread.Sleep(250);
             }
+            feedingNow = false;
         }
 
         void ChangeImage()
@@ -118,14 +119,20 @@ namespace BirdHome
             {
                 if (fly)
                 {
-                    BackgroundImage = Image.FromFile("img/rb_8.png");
+                    BackgroundImage = Image.FromFile("rb_8.png");
                 }
                 else
                 {
-                    BackgroundImage = Image.FromFile("img/rb_7.png");
+                    BackgroundImage = Image.FromFile("rb_7.png");
                 }
                 fly = !fly;
             }));
+        }
+
+        private void Bird_Load(object sender, EventArgs e)
+        {
+            threadBird = new Thread(ServiceBird);
+            threadBird.Start();
         }
     }
 }

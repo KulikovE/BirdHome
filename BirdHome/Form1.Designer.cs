@@ -28,9 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             home1 = new Home();
             vetka1 = new Vetka();
+            timer1 = new System.Windows.Forms.Timer(components);
             SuspendLayout();
             // 
             // home1
@@ -38,10 +40,10 @@
             home1.BackColor = Color.Transparent;
             home1.BackgroundImage = (Image)resources.GetObject("home1.BackgroundImage");
             home1.CountBird = 0U;
-            home1.Location = new Point(565, 171);
-            home1.Margin = new Padding(3, 4, 3, 4);
+            home1.Location = new Point(646, 228);
+            home1.Margin = new Padding(3, 5, 3, 5);
             home1.Name = "home1";
-            home1.Size = new Size(278, 221);
+            home1.Size = new Size(318, 295);
             home1.TabIndex = 0;
             // 
             // vetka1
@@ -50,22 +52,26 @@
             vetka1.BackgroundImage = (Image)resources.GetObject("vetka1.BackgroundImage");
             vetka1.CountBird = 0;
             vetka1.ForeColor = SystemColors.ControlText;
-            vetka1.Location = new Point(536, 458);
-            vetka1.Margin = new Padding(3, 2, 3, 2);
+            vetka1.Location = new Point(613, 611);
             vetka1.Name = "vetka1";
-            vetka1.Size = new Size(389, 166);
+            vetka1.Size = new Size(445, 221);
             vetka1.TabIndex = 1;
+            // 
+            // timer1
+            // 
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(987, 605);
+            ClientSize = new Size(1128, 807);
             Controls.Add(vetka1);
             Controls.Add(home1);
+            Margin = new Padding(3, 4, 3, 4);
             Name = "Form1";
             Text = "Кормушка";
             FormClosing += Form1_FormClosing;
+            Load += Form1_Load;
             ResumeLayout(false);
         }
 
@@ -73,5 +79,6 @@
 
         private Home home1;
         private Vetka vetka1;
+        private System.Windows.Forms.Timer timer1;
     }
 }

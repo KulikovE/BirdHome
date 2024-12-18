@@ -82,7 +82,7 @@
             numericUpDown4.Location = new Point(124, 370);
             numericUpDown4.Margin = new Padding(3, 4, 3, 4);
             numericUpDown4.Maximum = new decimal(new int[] { 15, 0, 0, 0 });
-            numericUpDown4.Minimum = new decimal(new int[] { 3, 0, 0, 0 });
+            numericUpDown4.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown4.Name = "numericUpDown4";
             numericUpDown4.Size = new Size(79, 45);
             numericUpDown4.TabIndex = 18;

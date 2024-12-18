@@ -40,6 +40,7 @@
             Margin = new Padding(3, 4, 3, 4);
             Name = "Bird";
             Size = new Size(144, 109);
+            Load += Bird_Load;
             ResumeLayout(false);
         }
 

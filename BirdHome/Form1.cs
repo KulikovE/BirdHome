@@ -5,6 +5,7 @@ namespace BirdHome
         bool addingBird = true;
         int chastotaPodl, downDelay, upDelay;
         public static List<Bird> birds = new List<Bird>();
+        bool close = false;
         public Form1(int valueNum, int downDelay, int upDelay, int chastotaPodl)
         {
             InitializeComponent();
@@ -12,13 +13,10 @@ namespace BirdHome
             this.upDelay = upDelay;
             this.chastotaPodl = chastotaPodl;
             home1.SemaphoreHome = new Semaphore(valueNum, valueNum);
-            Thread addBirdsThread = new Thread(StartAddingBirds);
-            addBirdsThread.Start();
         }
         private void StartAddingBirds()
         {
-            Thread.Sleep(100);
-            while (addingBird)
+            while (addingBird && this.IsHandleCreated)
             {
                 Bird bird = new Bird(home1, downDelay, upDelay, vetka1);
                 Invoke(new Action(() => { Controls.Add(bird); bird.BringToFront(); birds.Add(bird); }));
@@ -28,17 +26,25 @@ namespace BirdHome
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            DialogResult dl = MessageBox.Show("Вы действительно хотите закрыть форму?", "Подтверждение закрытия", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dl == DialogResult.No) 
-            { 
-                e.Cancel = true;
+            if (!close)
+            {
+                DialogResult dl = MessageBox.Show("Вы действительно хотите закрыть форму?", "Подтверждение закрытия", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dl == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
+                else
+                {
+                    addingBird = false;
+                    e.Cancel = true;
+                    Thread Close = new Thread(CloseBird);
+                    Close.Start();
+
+                }
             }
             else
             {
-                e.Cancel = true;
-                Thread Close = new Thread(CloseBird);
-                Close.Start();
-                addingBird = false;
+                e.Cancel = false;
             }
         }
 
@@ -47,25 +53,34 @@ namespace BirdHome
             while (birds.Count > 0)
             {
                 List<Bird> birdDeleted = new List<Bird>();
-                foreach(Bird bird in birds)
+                lock (birds)
                 {
-                    if (!bird.feedingNow)
+                    foreach (Bird bird in birds)
                     {
-                        birdDeleted.Add(bird);
+                        if (!bird.feedingNow)
+                        {
+                            bird.Stop(); // Остановка потока птицы
+                            birdDeleted.Add(bird);
+                        }
+                    }
+                    foreach (Bird bird in birdDeleted)
+                    {
+                        Invoke(() =>
+                        {
+                            Controls.Remove(bird);
+                            birds.Remove(bird);
+                            bird.Dispose();
+                        });
                     }
                 }
-                while(birdDeleted.Count > 0)
-                {
-                    Invoke(() =>
-                    {
-                        Bird currBird = birdDeleted[0];
-                        Controls.Remove(currBird);
-                        birds.Remove(currBird);
-                        birdDeleted.Remove(currBird);
-                        currBird.Dispose();
-                    });
-                }   
             }
+            Invoke(new Action(() => { close = true; this.Close();  }));
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            Thread addBirdsThread = new Thread(StartAddingBirds);
+            addBirdsThread.Start();
         }
     }
 }
