@@ -20,7 +20,7 @@ namespace BirdHome
         public int DownDelay { get; set; }
         public int UpDelay { get; set; }
         bool fly = true;
-        public bool feedingNow = false;
+        public bool FeedingNow { get; set; } = false;
         public Bird(Home home, int downDelay, int upDelay, Vetka vetka)
         {
             InitializeComponent();
@@ -89,8 +89,8 @@ namespace BirdHome
             }
             finally
             {
-                Controls.Remove(this);
                 Form1.birds.Remove(this);
+                Controls.Remove(this);
                 Dispose();
             }
 
@@ -98,19 +98,23 @@ namespace BirdHome
 
         void Eat()
         {
-            feedingNow = true;
+            FeedingNow = true;
             Invoke(new Action(() => Visible = false));
             Random random = new Random();
             Thread.Sleep(random.Next(DownDelay * 1000, UpDelay * 1000));
             int a = kormushka.SemaphoreHome.Release();
-            Invoke(new Action(() => { Visible = true; Left += kormushka.Size.Width; kormushka.CountBird--; }));
+            Invoke(new Action(() => {
+                Visible = true;
+                Left = kormushka.Location.X + kormushka.Size.Width;
+                Top = kormushka.Location.Y + kormushka.Size.Height/2;
+                kormushka.CountBird--; }));
             for (int i = 0; i < 40; i++)
             {
                 Invoke(new Action(() => { Left += 5; Top -= 5; }));
                 ChangeImage();
                 Thread.Sleep(250);
             }
-            feedingNow = false;
+            FeedingNow = false;
         }
 
         void ChangeImage()
@@ -119,11 +123,11 @@ namespace BirdHome
             {
                 if (fly)
                 {
-                    BackgroundImage = Image.FromFile("rb_8.png");
+                    BackgroundImage = Image.FromFile("img/rb_8.png");
                 }
                 else
                 {
-                    BackgroundImage = Image.FromFile("rb_7.png");
+                    BackgroundImage = Image.FromFile("img/rb_7.png");
                 }
                 fly = !fly;
             }));

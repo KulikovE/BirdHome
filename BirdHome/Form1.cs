@@ -36,10 +36,10 @@ namespace BirdHome
                 else
                 {
                     addingBird = false;
+                    vetka1.CountBird = 0;
                     e.Cancel = true;
                     Thread Close = new Thread(CloseBird);
                     Close.Start();
-
                 }
             }
             else
@@ -50,30 +50,26 @@ namespace BirdHome
 
         private void CloseBird()
         {
-            while (birds.Count > 0)
+            lock (birds)
             {
                 List<Bird> birdDeleted = new List<Bird>();
-                lock (birds)
+                foreach (Bird bird in birds)
                 {
-                    foreach (Bird bird in birds)
+                    if (!bird.FeedingNow)
                     {
-                        if (!bird.feedingNow)
-                        {
-                            bird.Stop(); // Остановка потока птицы
-                            birdDeleted.Add(bird);
-                        }
-                    }
-                    foreach (Bird bird in birdDeleted)
-                    {
-                        Invoke(() =>
-                        {
-                            Controls.Remove(bird);
-                            birds.Remove(bird);
-                            bird.Dispose();
-                        });
+                        birdDeleted.Add(bird);
                     }
                 }
+                foreach (Bird bird in birdDeleted)
+                {
+                    Invoke(() =>
+                    {
+                        bird.Stop();   
+                    });
+                }     
             }
+            while (birds.Count > 0)
+            { }
             Invoke(new Action(() => { close = true; this.Close();  }));
         }
 
