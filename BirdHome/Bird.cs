@@ -20,7 +20,7 @@ namespace BirdHome
         public int DownDelay { get; set; }
         public int UpDelay { get; set; }
         bool fly = true;
-        bool feedingNow = false;
+        public bool feedingNow = false;
         public Bird(Home home, int downDelay, int upDelay, Vetka vetka)
         {
             InitializeComponent();
@@ -34,19 +34,27 @@ namespace BirdHome
             threadBird = new Thread(ServiceBird);
             threadBird.Start();
         }
-        public void Stop()
-        {
-            if (feedingNow)
-            {
-                threadBird.Join();
-            }            
-        }
+        //public void Stop()
+        //{
+        //    if (feedingNow)
+        //    {
+        //        threadBird.Join();
+        //    }
+        //    else
+        //    {
+        //        Controls.Remove(this);
+        //        Form1.birds.Remove(this);
+        //        Dispose();
+        //    }
+        //}
        
 
         void ServiceBird()
         {
-            Thread.Sleep(500);
-                while(this.Location.X + this.Width < kormushka.Location.X)
+            try
+            {
+                Thread.Sleep(500);
+                while (this.Location.X + this.Width < kormushka.Location.X)
                 {
                     Invoke(new Action(() => Left += 10));
                     ChangeImage();
@@ -59,7 +67,8 @@ namespace BirdHome
                 }
                 else
                 {
-                    while(this.Location.X < vetka.Location.X + vetka.Width/4 && this.Location.Y < vetka.Location.Y + vetka.Height / 4) {
+                    while (this.Location.X < vetka.Location.X + vetka.Width / 4 && this.Location.Y < vetka.Location.Y + vetka.Height / 4)
+                    {
                         Invoke(new Action(() => { Left += 10; Top += 10; }));
                         ChangeImage();
                         Thread.Sleep(250);
@@ -67,15 +76,22 @@ namespace BirdHome
                     Invoke(new Action(() => { vetka.CountBird++; Visible = false; }));
                     kormushka.SemaphoreHome.WaitOne();
                     Invoke(new Action(() => { vetka.CountBird--; Visible = true; Left += 25; }));
-                while (this.Location.X > kormushka.Location.X )
-                {
-                    Invoke(new Action(() => { Left -= 10; Top -= 10; }));
+                    while (this.Location.X > kormushka.Location.X)
+                    {
+                        Invoke(new Action(() => { Left -= 10; Top -= 10; }));
                         ChangeImage();
                         Thread.Sleep(250);
-                }
-                    Invoke(new Action(() => kormushka.CountBird++)); 
+                    }
+                    Invoke(new Action(() => kormushka.CountBird++));
                     Eat();
                 }
+            }
+            finally
+            {
+                Controls.Remove(this);
+                Form1.birds.Remove(this);
+                Dispose();
+            }
             
         }
 
@@ -94,7 +110,6 @@ namespace BirdHome
                 ChangeImage();
                 Thread.Sleep(250);
             }
-            Dispose();
         }
 
         void ChangeImage()
@@ -103,11 +118,11 @@ namespace BirdHome
             {
                 if (fly)
                 {
-                    BackgroundImage = Image.FromFile("rb_8.png");
+                    BackgroundImage = Image.FromFile("img/rb_8.png");
                 }
                 else
                 {
-                    BackgroundImage = Image.FromFile("rb_7.png");
+                    BackgroundImage = Image.FromFile("img/rb_7.png");
                 }
                 fly = !fly;
             }));

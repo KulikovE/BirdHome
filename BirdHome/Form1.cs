@@ -4,7 +4,7 @@ namespace BirdHome
     {
         bool addingBird = true;
         int chastotaPodl, downDelay, upDelay;
-        List<Bird> birds = new List<Bird>();
+        public static List<Bird> birds = new List<Bird>();
         public Form1(int valueNum, int downDelay, int upDelay, int chastotaPodl)
         {
             InitializeComponent();
@@ -35,11 +35,36 @@ namespace BirdHome
             }
             else
             {
+                e.Cancel = true;
+                Thread Close = new Thread(CloseBird);
+                Close.Start();
                 addingBird = false;
-                foreach (Bird bird in birds)
+            }
+        }
+
+        private void CloseBird()
+        {
+            while (birds.Count > 0)
+            {
+                List<Bird> birdDeleted = new List<Bird>();
+                foreach(Bird bird in birds)
                 {
-                    bird.Stop();
+                    if (!bird.feedingNow)
+                    {
+                        birdDeleted.Add(bird);
+                    }
                 }
+                while(birdDeleted.Count > 0)
+                {
+                    Invoke(() =>
+                    {
+                        Bird currBird = birdDeleted[0];
+                        Controls.Remove(currBird);
+                        birds.Remove(currBird);
+                        birdDeleted.Remove(currBird);
+                        currBird.Dispose();
+                    });
+                }   
             }
         }
     }
